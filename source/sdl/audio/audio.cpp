@@ -9,7 +9,7 @@
 #ifdef __3DS__
 #include <3ds.h>
 #endif
-#ifdef __PC__
+#if defined(__PC__) || defined(__PSP__)
 #include <cmrc/cmrc.hpp>
 
 CMRC_DECLARE(romfs);
@@ -140,49 +140,42 @@ bool SoundPlayer::loadSoundFromSB3(Sprite *sprite, mz_zip_archive *zip, const st
                     return false;
                 }
                 // Log::log("Converting sound into SDL sound...");
-                chunk = Mix_LoadWAV_RW(rw, 1);
-                mz_free(file_data);
+                chunk = Mix_LoadWAV_RW(rw, 0);
 
                 if (!chunk) {
                     Log::logWarning("Failed to load audio from memory: " + zipFileName + " - SDL_mixer Error: " + Mix_GetError());
+                    mz_free(file_data);
                     return false;
                 }
             } else {
-                SDL_RWops *rw = SDL_RWFromMem(file_data, (int)file_size);
-                if (!rw) {
-                    Log::logWarning("Cannot create RWops for streamed music, falling back to extract method.");
-                    std::string tempDir = OS::getScratchFolderLocation() + "/cache";
-                    std::string tempFile = tempDir + "/temp_" + soundId;
+                std::string tempDir = OS::getScratchFolderLocation() + "/cache";
+                std::string tempFile = tempDir + "/temp_" + soundId;
 
-                    // make cache directory
-                    try {
-                        std::filesystem::create_directories(tempDir);
-                    } catch (const std::exception &e) {
-                        Log::logWarning(std::string("Failed to create temp directory: ") + e.what());
-                        mz_free(file_data);
-                        return false;
-                    }
-
-                    FILE *fp = fopen(tempFile.c_str(), "wb");
-                    if (!fp) {
-                        Log::logWarning("Failed to create temp file for streaming");
-                        mz_free(file_data);
-                        return false;
-                    }
-
-                    fwrite(file_data, 1, file_size, fp);
-                    fclose(fp);
+                // make cache directory
+                try {
+                    std::filesystem::create_directories(tempDir);
+                } catch (const std::exception &e) {
+                    Log::logWarning(std::string("Failed to create temp directory: ") + e.what());
                     mz_free(file_data);
-
-                    music = Mix_LoadMUS(tempFile.c_str());
-
-                    // Clean up temp file
-                    remove(tempFile.c_str());
-
-                } else {
-                    music = Mix_LoadMUS_RW(rw, 1);
-                    mz_free(file_data);
+                    return false;
                 }
+
+                FILE *fp = fopen(tempFile.c_str(), "wb");
+                if (!fp) {
+                    Log::logWarning("Failed to create temp file for streaming");
+                    mz_free(file_data);
+                    return false;
+                }
+
+                fwrite(file_data, 1, file_size, fp);
+                fclose(fp);
+                mz_free(file_data);
+
+                music = Mix_LoadMUS(tempFile.c_str());
+
+                // Clean up temp file
+                remove(tempFile.c_str());
+
                 if (!music) {
                     Log::logWarning("Failed to load music from memory: " + zipFileName + " - SDL_mixer Error: " + Mix_GetError());
                     return false;
@@ -211,6 +204,7 @@ bool SoundPlayer::loadSoundFromSB3(Sprite *sprite, mz_zip_archive *zip, const st
             // Log::log("memory usage: " + std::to_string(MemoryTracker::getCurrentUsage() / 1024) + " KB");
             SDL_Sounds[soundId]->isLoaded = true;
             SDL_Sounds[soundId]->channelId = SDL_Sounds.size();
+            SDL_Sounds[soundId]->file_size = file_size;
             playSound(soundId);
             setSoundVolume(soundId, sprite->volume);
             return true;
@@ -249,7 +243,7 @@ bool SoundPlayer::loadSoundFromFile(Sprite *sprite, std::string fileName, const 
     size_t audioMemorySize = 0;
 
     if (!streamed) {
-#ifdef __PC__
+#if defined(__PC__) || defined(__PSP__)
         const auto &file = cmrc::romfs::get_filesystem().open(fileName);
         chunk = Mix_LoadWAV_RW(SDL_RWFromConstMem(file.begin(), file.size()), 1);
 #else
@@ -260,7 +254,7 @@ bool SoundPlayer::loadSoundFromFile(Sprite *sprite, std::string fileName, const 
             return false;
         }
     } else {
-#ifdef __PC__
+#if defined(__PC__) || defined(__PSP__)
         const auto &file = cmrc::romfs::get_filesystem().open(fileName);
         music = Mix_LoadMUS_RW(SDL_RWFromConstMem(file.begin(), file.size()), 1);
 #else
