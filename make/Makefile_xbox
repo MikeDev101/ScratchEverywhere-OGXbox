@@ -12,16 +12,22 @@ ifeq ($(strip $(NXDK_DIR)),)
 $(error "Please set the NXDK path in your environment. export NXDK_DIR=<path to>nxdk")
 endif
 
-XBE_TITLE   :=  Scratch\ Everywhere!
-GEN_XISO    :=  scratch-xbox.iso
+# Ensure nxdk-cxx is in your path and executable
+ifeq ($(shell command -v nxdk-cxx 2> /dev/null),)
+$(error "nxdk-cxx not found in PATH. You might need to add nxdk/bin to your PATH.")
+endif
+
+#---------------------------------------------------------------------------------
+XBE_TITLE   :=  scratch-xbox
+GEN_XISO    :=  $(XBE_TITLE).iso
+SOURCES     :=  source source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/minizip-ng include/nlohmann
+INCLUDES    :=  include source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/minizip-ng include/nlohmann
+#---------------------------------------------------------------------------------
 
 # Updated paths from the original feat/og-xbox-support
 # 1. Removed: include/miniz
 # 2. Added: source/utils (for our new C++ wrapper)
 # 3. Added: include/minizip-ng
-
-SOURCES     :=  source source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/minizip-ng include/nlohmann
-INCLUDES    :=  include source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/minizip-ng include/nlohmann
 
 INCLUDE_FLAGS   :=  $(foreach dir,$(INCLUDES),-I$(dir))
 CFLAGS          :=  $(INCLUDE_FLAGS) -DSDL_BUILD
