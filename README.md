@@ -274,6 +274,17 @@ Place your Scratch projects in `/data/scratch-ps4`, if the folder doesn't exist,
 
 Then it should be as simple as opening the app on your PS4 from the XMB!
 
+### Get up and running for Original Xbox
+
+> [!NOTE]
+> Scratch Everywhere! for the Original Xbox is incomplete and experimental.
+
+Download the `scratch-xbox.iso` file from the releases tab (eventually) or the *nightly build* (eventually). Transfer the image to your hard drive or emulator, or even burn it to a DVD (not recommended).
+
+Place your Scratch projects in `D:\data\scratch-xbox`. If it doesn't exist, create it.
+
+Should be as easy as running the app from your Dasboard of choice!
+
 ## Building
 
 In order to embed a Scratch project in the executable, you'll need to compile the source code.
@@ -285,6 +296,7 @@ If you would like to change the name of the app or any other information you can
 -   **For the Wii**, you need to edit `Makefile_wii` and change anything under `Application Info` to whatever you please.
 -   **For the Vita**, you need to edit the properties under `# METADATA/CONFIG` to whatever you please. Do note however, if you're going to use custom LiveArea images, you must run them through `pngquant` (install with your package manager) with `--posterize` set to 4 first before packaging.
 -   **For the PS4**, you need to edit `Makefile_ps4` and change anything under `Package metadata` to whatever you please.
+-   **For the Original Xbox**, you need to edit `Makefile_xbox` and change `XBE_TITLE` to whatever you please.
 
 #### Docker
 
@@ -328,6 +340,7 @@ If you are compiling with cloud variables, you will need to have DevkitPro's SDK
 -   **For the Vita**, all you need is the [vitasdk](https://vitasdk.org) toolchain. It includes every SDL2 thing you might need.
 -   **For the PSP**, all you need is the [PSPSDK](https://pspdev.github.io) toolchain. It includes every SDL2 thing you might need.
 -   **For the PS4**, you will need the [OpenOrbis](https://github.com/OpenOrbis/OpenOrbis-PS4-Toolchain) toolchain, [PacBrew](https://github.com/PacBrew/ps4-openorbis-portlibs) portlibs which include SDL2, and our [fixed packages](https://github.com/gradylink/pacbrew-packages).
+-   **For the Original Xbox**, all you need is the [nxdk](https://github.com/XboxDev/nxdk) toolchain. It (maybe) includes every SDL2 thing you might need.
 
 > [!NOTE]
 > DevkitPro's install instructions are available at: https://devkitpro.org/wiki/Getting_Started
@@ -349,6 +362,7 @@ Then you need to compile the projects into proper Homebrew packages.
 -   **For the Vita**, run `make PLATFORM=vita`, then transfer the VPK at `build/vita/scratch-vita.vpk` over to your Vita.
 -   **For the PSP**, run `psp-cmake -B build/psp -S . -DSE_SYSTEM=ON -DSE_CLOUDVARS=OFF && make -C build/psp`, then unzip the `scratch-psp.zip` file at `build/psp` and transfer the `scratch-psp` folder over to your PSP.
 -   **For the PS4**, you will need to run `make PLATFORM=ps4`, then find the `.pkg` file at `build/ps4/scratch-ps4.pkg`.
+-   **For the Original Xbox**, you will need to run `make PLATFORM=xbox`, then transfer the `.iso` file onto your Xbox's hard drive.
 
 #### Compilation Flags
 
