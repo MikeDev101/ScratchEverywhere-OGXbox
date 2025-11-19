@@ -20,8 +20,8 @@ endif
 #---------------------------------------------------------------------------------
 XBE_TITLE   :=  scratch-xbox
 GEN_XISO    :=  $(XBE_TITLE).iso
-SOURCES     :=  source source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/minizip-ng include/nlohmann
-INCLUDES    :=  include source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/minizip-ng include/nlohmann
+SOURCES     :=  source source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils source/minizip-ng include/nlohmann source/miniz
+INCLUDES    :=  include source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils source/minizip-ng include/nlohmann source/miniz
 #---------------------------------------------------------------------------------
 
 # Updated paths from the original feat/og-xbox-support
