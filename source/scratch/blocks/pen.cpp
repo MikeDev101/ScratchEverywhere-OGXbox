@@ -55,7 +55,7 @@ BlockResult PenBlocks::PenDown(Block &block, Sprite *sprite, bool *withoutScreen
     const ColorRGB rgbColor = CSB2RGB(sprite->penData.color);
     const int transparency = 255 * (1 - sprite->penData.transparency / 100);
     if (!Render::hasFrameBegan) {
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        if (!C3D_FrameBegin(C3D_FRAME_NONBLOCK)) C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         Render::hasFrameBegan = true;
     }
     C2D_SceneBegin(penRenderTarget);
@@ -194,7 +194,7 @@ BlockResult PenBlocks::EraseAll(Block &block, Sprite *sprite, bool *withoutScree
 }
 
 BlockResult PenBlocks::Stamp(Block &block, Sprite *sprite, bool *withoutScreenRefresh, bool fromRepeat) {
-    if (!sprite->visible || !Render::initPen()) return BlockResult::CONTINUE;
+    if (!Render::initPen()) return BlockResult::CONTINUE;
 
     if (projectType == UNZIPPED) {
         Image::loadImageFromFile(sprite->costumes[sprite->currentCostume].fullName, sprite);
@@ -246,8 +246,8 @@ BlockResult PenBlocks::Stamp(Block &block, Sprite *sprite, bool *withoutScreenRe
     const double offsetX = rotationCenterX * (sprite->size * 0.01) * scale;
     const double offsetY = rotationCenterY * (sprite->size * 0.01) * scale;
 
-    image->renderRect.w = sprite->spriteWidth * scale;
-    image->renderRect.h = sprite->spriteHeight * scale;
+    image->renderRect.w = sprite->spriteWidth * scale * sprite->size * 0.01;
+    image->renderRect.h = sprite->spriteHeight * scale * sprite->size * 0.01;
     image->renderRect.x = (sprite->xPosition * scale + penWidth / 2.0f - (image->renderRect.w / 1.325f)) - offsetX * std::cos(rotation) + offsetY * std::sin(renderRotation);
     image->renderRect.y = (-sprite->yPosition * scale + penHeight / 2.0f - (image->renderRect.h / 1.325f)) - offsetX * std::sin(rotation) - offsetY * std::cos(renderRotation);
     const SDL_Point center = {image->renderRect.w / 2, image->renderRect.h / 2};
@@ -290,7 +290,7 @@ BlockResult PenBlocks::Stamp(Block &block, Sprite *sprite, bool *withoutScreenRe
     imgFind->second.freeTimer = data.maxFreeTimer;
     C2D_Image *costumeTexture = &data.image;
     if (!Render::hasFrameBegan) {
-        C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+        if (!C3D_FrameBegin(C3D_FRAME_NONBLOCK)) C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
         Render::hasFrameBegan = true;
     }
     C2D_SceneBegin(penRenderTarget);
