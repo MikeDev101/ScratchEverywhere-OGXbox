@@ -1,0 +1,4 @@
+[submodule "source/minizip-ng"]
+	path = source/minizip-ng
+	url = https://github.com/zlib-ng/minizip-ng.git
+	branch = master
