@@ -1,0 +1,37 @@
+# Scratch Everywhere! on the Original Xbox
+#
+# Makefile template based on the original feat/og-xbox-support PR [https://github.com/ScratchEverywhere/ScratchEverywhere/pull/276]
+# NOT READY FOR USE YET, THERE WILL BE VERY ANGRY DUCKS
+
+#---------------------------------------------------------------------------------
+.SUFFIXES: 
+#---------------------------------------------------------------------------------
+
+# Ensure the NXDK path is set
+ifeq ($(strip $(NXDK_DIR)),)
+$(error "Please set the NXDK path in your environment. export NXDK_DIR=<path to>nxdk")
+endif
+
+XBE_TITLE   :=  Scratch\ Everywhere!
+GEN_XISO    :=  scratch-xbox.iso
+
+# Updated paths from the original feat/og-xbox-support
+# 1. Removed: include/miniz
+# 2. Added: source/utils (for our new C++ wrapper)
+# 3. Added: include/minizip-ng
+
+SOURCES     :=  source source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/minizip-ng include/nlohmann
+INCLUDES    :=  include source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/minizip-ng include/nlohmann
+
+INCLUDE_FLAGS   :=  $(foreach dir,$(INCLUDES),-I$(dir))
+CFLAGS          :=  $(INCLUDE_FLAGS) -DSDL_BUILD
+CXXFLAGS        :=  $(CFLAGS) -std=c++17 -fexceptions
+
+SRC_CPP     :=  $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.cpp))
+SRC_C       :=  $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c))
+SRCS        :=  $(SRC_CPP) $(SRC_C)
+
+NXDK_SDL    :=  y
+NXDK_CXX    :=  y
+
+include $(NXDK_DIR)/Makefile
