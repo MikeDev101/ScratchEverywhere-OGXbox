@@ -1,7 +1,7 @@
 #pragma once
 
 #include "interpret.hpp"
-#include "miniz.h"
+// #include "miniz.h"
 #include "os.hpp"
 #include <filesystem>
 #include <fstream>
@@ -25,7 +25,7 @@ class Unzip {
     static volatile bool threadFinished;
     static std::string filePath;
     static bool UnpackedInSD;
-    static mz_zip_archive zipArchive;
+    static mz_zip_archive zipArchive; // TODO: Replace with minizip-ng
     static std::vector<char> zipBuffer;
 
     static void openScratchProject(void *arg) {
@@ -220,7 +220,7 @@ class Unzip {
             Log::log("Parsing project.json...");
 
             project_json = nlohmann::json::parse(std::string(json_data, json_size));
-            mz_free((void *)json_data);
+            mz_free((void *)json_data);  // TODO: Replace with minizip-ng
 
         } else {
             file->clear();
@@ -251,7 +251,7 @@ class Unzip {
     static bool load();
 
     static bool extractProject(const std::string &zipPath, const std::string &destFolder) {
-        mz_zip_archive zip;
+        mz_zip_archive zip;  // TODO: Replace with minizip-ng
         memset(&zip, 0, sizeof(zip));
         if (!mz_zip_reader_init_file(&zip, zipPath.c_str(), 0)) {
             Log::logError("Failed to open zip: " + zipPath);
@@ -260,7 +260,7 @@ class Unzip {
 
         int numFiles = (int)mz_zip_reader_get_num_files(&zip);
         for (int i = 0; i < numFiles; i++) {
-            mz_zip_archive_file_stat st;
+            mz_zip_archive_file_stat st;  // TODO: Replace with minizip-ng
             if (!mz_zip_reader_file_stat(&zip, i, &st)) continue;
             std::string filename(st.m_filename);
 

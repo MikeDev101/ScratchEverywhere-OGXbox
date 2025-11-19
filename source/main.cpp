@@ -8,9 +8,10 @@
 #include <switch.h>
 #endif
 
-#ifdef SDL_BUILD
-#include <SDL2/SDL.h>
-#endif
+// This points to nothing???
+// #ifdef SDL_BUILD
+// #include <SDL2/SDL.h>
+// #endif
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>

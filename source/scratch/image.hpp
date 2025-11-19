@@ -1,6 +1,6 @@
 #pragma once
 #include "interpret.hpp"
-#include "miniz.h"
+// #include "miniz.h"
 #include <string>
 
 class Image {
@@ -41,6 +41,7 @@ class Image {
     /**
      * `3DS`: Nothing yet yippie
      * `SDL`: Loads a single `SDL_Image` from a zip file.
+     *  TODO: Replace with minizip-ng
      */
     static void loadImageFromSB3(mz_zip_archive *zip, const std::string &costumeId, Sprite *sprite);
 
