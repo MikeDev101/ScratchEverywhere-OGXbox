@@ -6,11 +6,7 @@
 #include "value.hpp"
 
 #ifdef SDL_BUILD
-#if defined(_XBOX) || defined(__XBOX__)
-    #include <SDL.h>
-#else
-    #include <SDL2/SDL.h>
-#endif
+#include <SDL2/SDL.h>
 
 extern SDL_GameController *controller;
 #endif

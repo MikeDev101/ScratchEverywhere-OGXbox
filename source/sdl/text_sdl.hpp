@@ -1,12 +1,7 @@
 #pragma once
 #include "../scratch/text.hpp"
-#if defined(_XBOX) || defined(__XBOX__)
-    #include <SDL.h>
-    #include <SDL_ttf.h>
-#else
-    #include <SDL2/SDL.h>
-    #include <SDL2/SDL_ttf.h>
-#endif
+#include <SDL2/SDL.h>
+#include <SDL_ttf.h>
 #include <unordered_map>
 
 class TextObjectSDL : public TextObject {

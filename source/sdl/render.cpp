@@ -9,11 +9,7 @@
 #include "sprite.hpp"
 #include "text.hpp"
 #include "unzip.hpp"
-#if defined(_XBOX) || defined(__XBOX__)
-    #include <SDL.h>
-#else
-    #include <SDL2/SDL.h>
-#endif
+#include <SDL2/SDL.h>
 #include <SDL2_gfxPrimitives.h>
 #include <algorithm>
 #include <chrono>

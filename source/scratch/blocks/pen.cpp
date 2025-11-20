@@ -16,10 +16,7 @@ C3D_Tex *penTex;
 #elif defined(SDL_BUILD)
 #include "../../sdl/image.hpp"
 #include "../../sdl/render.hpp"
-
-// TODO: need to fix this, gfxPrimitives is not included with the nxdk so we'll need to manually add it
 #include <SDL2_gfxPrimitives.h>
-#endif
 
 SDL_Texture *penTexture;
 #else
@@ -202,7 +199,7 @@ BlockResult PenBlocks::Stamp(Block &block, Sprite *sprite, bool *withoutScreenRe
     if (projectType == UNZIPPED) {
         Image::loadImageFromFile(sprite->costumes[sprite->currentCostume].fullName, sprite);
     } else {
-        Image::loadImageFromSB3(&Unzip::zip_reader, sprite->costumes[sprite->currentCostume].fullName, sprite);
+        Image::loadImageFromSB3(&Unzip::zipArchive, sprite->costumes[sprite->currentCostume].fullName, sprite);
     }
 
     const auto &imgFind = images.find(sprite->costumes[sprite->currentCostume].id);

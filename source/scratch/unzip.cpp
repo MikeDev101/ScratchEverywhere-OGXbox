@@ -5,11 +5,7 @@
 #ifdef __3DS__
 #include <3ds.h>
 #elif defined(SDL_BUILD)
-#if defined(_XBOX) || defined(__XBOX__)
-    #include <SDL.h>
-#else
-    #include <SDL2/SDL.h>
-#endif
+#include "SDL2/SDL.h"
 #endif
 
 #if defined(__PC__) || defined(__PSP__)
@@ -18,6 +14,14 @@
 
 CMRC_DECLARE(romfs);
 #endif
+
+volatile int Unzip::projectOpened = 0;
+std::string Unzip::loadingState = "";
+volatile bool Unzip::threadFinished = false;
+std::string Unzip::filePath = "";
+mz_zip_archive Unzip::zipArchive;
+std::vector<char> Unzip::zipBuffer;
+bool Unzip::UnpackedInSD = false;
 
 int Unzip::openFile(std::istream *&file) {
     Log::log("Unzipping Scratch project...");
@@ -115,7 +119,7 @@ void loadInitialImages() {
         for (auto &currentSprite : sprites) {
             if (!currentSprite->visible || currentSprite->ghostEffect == 100) continue;
             Unzip::loadingState = "Loading image " + std::to_string(sprIndex) + " / " + std::to_string(sprites.size());
-            Image::loadImageFromSB3(Unzip::zip_reader, currentSprite->costumes[currentSprite->currentCostume].fullName, currentSprite);
+            Image::loadImageFromSB3(&Unzip::zipArchive, currentSprite->costumes[currentSprite->currentCostume].fullName, currentSprite);
             sprIndex++;
         }
     }
