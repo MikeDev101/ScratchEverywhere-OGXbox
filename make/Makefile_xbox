@@ -30,7 +30,7 @@ INCLUDES    :=  include source/scratch source/scratch/blocks source/scratch/menu
 # 3. Added: include/minizip-ng
 
 INCLUDE_FLAGS   :=  $(foreach dir,$(INCLUDES),-I$(dir))
-CFLAGS          :=  $(INCLUDE_FLAGS) -DSDL_BUILD
+CFLAGS          :=  $(INCLUDE_FLAGS) -DSDL_BUILD -D__XBOX__ -D_XBOX
 CXXFLAGS        :=  $(CFLAGS) -std=c++17 -fexceptions
 
 SRC_CPP     :=  $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.cpp))
