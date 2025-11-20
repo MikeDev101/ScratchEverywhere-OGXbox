@@ -1,6 +1,7 @@
 #pragma once
 #include "interpret.hpp"
 // #include "miniz.h"
+#include "mz_zip.h"
 #include <string>
 
 class Image {
@@ -43,7 +44,7 @@ class Image {
      * `SDL`: Loads a single `SDL_Image` from a zip file.
      *  TODO: Replace with minizip-ng
      */
-    static void loadImageFromSB3(mz_zip_archive *zip, const std::string &costumeId, Sprite *sprite);
+    static void loadImageFromSB3(mz_zip_file *zip, const std::string &costumeId, Sprite *sprite);
 
     /**
      * `3DS`: Frees a `C2D_Image` from memory.
