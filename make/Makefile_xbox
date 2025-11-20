@@ -1,7 +1,4 @@
 # Scratch Everywhere! on the Original Xbox
-#
-# Makefile template based on the original feat/og-xbox-support PR [https://github.com/ScratchEverywhere/ScratchEverywhere/pull/276]
-# NOT READY FOR USE YET, THERE WILL BE VERY ANGRY DUCKS
 
 #---------------------------------------------------------------------------------
 .SUFFIXES: 
@@ -20,22 +17,41 @@ endif
 #---------------------------------------------------------------------------------
 XBE_TITLE   :=  scratch-xbox
 GEN_XISO    :=  $(XBE_TITLE).iso
-SOURCES     :=  source source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils source/minizip-ng include/nlohmann source/miniz
-INCLUDES    :=  include source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils source/minizip-ng include/nlohmann source/miniz
-#---------------------------------------------------------------------------------
 
-# Updated paths from the original feat/og-xbox-support
-# 1. Removed: include/miniz
-# 2. Added: source/utils (for our new C++ wrapper)
-# 3. Added: include/minizip-ng
+# Define Sources Directories (excluding minizip for now, we handle it manually below)
+SOURCES     :=  source source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/nlohmann source/SDL2_gfx
+INCLUDES    :=  include source/scratch source/scratch/blocks source/scratch/menus source/sdl source/sdl/audio source/utils include/nlohmann source/minizip-ng source/SDL2_gfx
 
 INCLUDE_FLAGS   :=  $(foreach dir,$(INCLUDES),-I$(dir))
-CFLAGS          :=  $(INCLUDE_FLAGS) -DSDL_BUILD -D__XBOX__ -D_XBOX
-CXXFLAGS        :=  $(CFLAGS) -std=c++17 -fexceptions
 
+# Add -DHAVE_ZLIB and -DZLIB_COMPAT so minizip uses system zlib.h
+CFLAGS    := $(INCLUDE_FLAGS) -DSDL_BUILD -D__XBOX__ -D_XBOX -DHAVE_ZLIB -DZLIB_COMPAT -D_WIN32
+# Use -fno-exceptions to prevent linker errors
+CXXFLAGS  := $(CFLAGS) -std=c++17 -fexceptions
+
+# --- Source Collection ---
+
+# 1. Grab standard sources (using wildcards is fine for your own code)
 SRC_CPP     :=  $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.cpp))
 SRC_C       :=  $(foreach dir,$(SOURCES),$(wildcard $(dir)/*.c))
-SRCS        :=  $(SRC_CPP) $(SRC_C)
+
+# 2. Explicitly list Minizip-NG files (No ghosts, no Apple crypto, no Win32)
+MINIZIP_DIR := source/minizip-ng
+MINIZIP_SRCS := \
+    $(MINIZIP_DIR)/mz_zip.c \
+    $(MINIZIP_DIR)/mz_zip_rw.c \
+    $(MINIZIP_DIR)/mz_strm.c \
+    $(MINIZIP_DIR)/mz_strm_mem.c \
+    $(MINIZIP_DIR)/mz_strm_buf.c \
+    $(MINIZIP_DIR)/mz_strm_split.c \
+    $(MINIZIP_DIR)/mz_strm_zlib.c \
+    $(MINIZIP_DIR)/mz_strm_pkcrypt.c \
+    $(MINIZIP_DIR)/mz_os.c \
+    $(MINIZIP_DIR)/mz_os_win32.c \
+    $(MINIZIP_DIR)/mz_strm_os_win32.c
+
+# Combine everything
+SRCS        :=  $(SRC_CPP) $(SRC_C) $(MINIZIP_SRCS)
 
 NXDK_SDL    :=  y
 NXDK_CXX    :=  y
