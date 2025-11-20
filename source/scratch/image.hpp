@@ -42,9 +42,8 @@ class Image {
     /**
      * `3DS`: Nothing yet yippie
      * `SDL`: Loads a single `SDL_Image` from a zip file.
-     *  TODO: Replace with minizip-ng
      */
-    static void loadImageFromSB3(mz_zip_file *zip, const std::string &costumeId, Sprite *sprite);
+    static void loadImageFromSB3(void *zip, const std::string &costumeId, Sprite *sprite);
 
     /**
      * `3DS`: Frees a `C2D_Image` from memory.

@@ -1,7 +1,11 @@
 #include "keyboard.hpp"
 #include "../scratch/render.hpp"
 #include "text.hpp"
-#include <SDL2/SDL.h>
+#if defined(_XBOX) || defined(__XBOX__)
+    #include <SDL.h>
+#else
+    #include <SDL2/SDL.h>
+#endif
 #include <string>
 
 #ifdef __SWITCH__

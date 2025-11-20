@@ -209,10 +209,16 @@ void Scratch::cleanupScratchProject() {
     // Clean up ZIP archive if it was initialized
     if (projectType != UNZIPPED) {
 
-        mz_zip_reader_end(&Unzip::zipArchive);
+        /** mz_zip_reader_end(&Unzip::zipArchive);
         Unzip::zipBuffer.clear();
         Unzip::zipBuffer.shrink_to_fit();
-        memset(&Unzip::zipArchive, 0, sizeof(Unzip::zipArchive));
+        memset(&Unzip::zipArchive, 0, sizeof(Unzip::zipArchive));**/
+
+        if (Unzip::zip_reader) {
+            mz_zip_reader_close(Unzip::zip_reader);
+            mz_zip_reader_delete(&Unzip::zip_reader);
+            Unzip::zip_reader = nullptr;
+        }
     }
 
 #ifdef ENABLE_CLOUDVARS

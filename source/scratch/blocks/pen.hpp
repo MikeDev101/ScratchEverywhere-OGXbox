@@ -13,7 +13,11 @@ extern C3D_Tex *penTex;
 #define TEXTURE_OFFSET 16
 
 #elif defined(SDL_BUILD)
-#include <SDL2/SDL.h>
+#if defined(_XBOX) || defined(__XBOX__)
+    #include <SDL.h>
+#else
+    #include <SDL2/SDL.h>
+#endif
 
 extern SDL_Texture *penTexture;
 #else

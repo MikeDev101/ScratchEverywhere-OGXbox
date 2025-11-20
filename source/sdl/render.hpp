@@ -1,5 +1,9 @@
 #pragma once
-#include <SDL2/SDL.h>
+#if defined(_XBOX) || defined(__XBOX__)
+    #include <SDL.h>
+#else
+    #include <SDL2/SDL.h>
+#endif
 #ifdef ENABLE_AUDIO
 #include <SDL_mixer.h>
 #endif

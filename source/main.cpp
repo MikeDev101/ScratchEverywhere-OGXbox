@@ -8,10 +8,14 @@
 #include <switch.h>
 #endif
 
-// This points to nothing???
-// #ifdef SDL_BUILD
-// #include <SDL2/SDL.h>
-// #endif
+// Fix for SDL2 in nxdk: it's directly included
+#ifdef SDL_BUILD
+#if defined(_XBOX) || defined(__XBOX__)
+    #include <SDL.h>
+#else
+    #include <SDL2/SDL.h>
+#endif
+#endif
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
