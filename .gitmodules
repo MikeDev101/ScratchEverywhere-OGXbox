@@ -2,3 +2,6 @@
 	path = source/minizip-ng
 	url = https://github.com/zlib-ng/minizip-ng.git
 	branch = master
+[submodule "source/SDL2_gfx"]
+	path = source/SDL2_gfx
+	url = https://github.com/ferzkopp/SDL2_gfx.git
